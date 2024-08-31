@@ -1,46 +1,15 @@
 import pygame
 import sys
-import random
-from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, GREEN
+from menu import MainMenu
+from settings import FPS, WIDTH, HEIGHT, BLACK, WHITE, RED, GREEN
 from player import Player
-from enemy import Enemy
+from enemy import Enemy, spawn_enemies
 from maze import Maze
-from coin import Coin
+from coin import create_coins
 from database import load_game_data, save_game_data
-#
-def create_coins(num_coins):
-    """Create a specified number of coins at random positions."""
-    coins = pygame.sprite.Group()
-    for _ in range(num_coins):
-        x = random.randint(30, WIDTH - 30)
-        y = random.randint(30, HEIGHT - 30)
-        coin = Coin(x, y)
-        coins.add(coin)
-    return coins
+from utils import show_message, draw_round_info
 
-def show_message(screen, font, text, color, background_color=None):
-    if background_color:
-        screen.fill(background_color)
-    message = font.render(text, True, color)
-    text_rect = message.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-    screen.blit(message, text_rect)
-    pygame.display.flip()
-
-def draw_round_info(screen, font, round_number, coins_needed, num_enemies):
-    info_text = f"Round: {round_number} | Coins Needed: {coins_needed} | Enemies: {num_enemies}"
-    info_surface = font.render(info_text, True, WHITE)
-    screen.blit(info_surface, (10, 10))
-
-def spawn_enemies(round_number, all_sprites, enemies, enemy_speed):
-    corners = [(0, 0), (WIDTH - 20, 0), (0, HEIGHT - 20), (WIDTH - 20, HEIGHT - 20)]
-    num_enemies = round_number
-    for i in range(num_enemies):
-        x, y = corners[i % 4]
-        enemy = Enemy(x, y, speed=enemy_speed)
-        enemies.add(enemy)
-        all_sprites.add(enemy)
-
-def run_game():
+def run_game(selected_colors):
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Pac-Man Game")
@@ -49,6 +18,9 @@ def run_game():
     font = pygame.font.Font(None, 36)
     game_over_font = pygame.font.Font(None, 100)
     win_font = pygame.font.Font(None, 100)
+
+    player_color = selected_colors['player']
+    enemy_color = selected_colors['enemy']
 
     game_data = load_game_data()
     high_score = game_data["high_score"]
@@ -62,22 +34,22 @@ def run_game():
     game_over = False
     score = 0
 
-    enemy_speed = 1
+    enemy_speed = 2
 
     while current_round <= num_rounds:
         all_sprites = pygame.sprite.Group()
         enemies = pygame.sprite.Group()
         coins = pygame.sprite.Group()
-        
+
         maze = Maze()
-        player = Player(WIDTH // 2, HEIGHT // 2)
+        player = Player(WIDTH // 2, HEIGHT // 2, color=player_color)
         all_sprites.add(player)
 
         num_coins = 10 + (current_round - 1) * 5
         coins = create_coins(num_coins)
         all_sprites.add(coins)
 
-        spawn_enemies(current_round, all_sprites, enemies, enemy_speed)
+        spawn_enemies(current_round, all_sprites, enemies, enemy_speed, color=enemy_color)
 
         round_start_time = pygame.time.get_ticks()
         round_end_time = round_start_time + 30000
@@ -107,7 +79,7 @@ def run_game():
 
             if enemy_movement_allowed:
                 for enemy in enemies:
-                    enemy.update(player.rect.center)
+                    enemy.update(player.rect.center, enemies)
 
             if pygame.sprite.spritecollideany(player, enemies):
                 game_over = True
@@ -165,4 +137,5 @@ def run_game():
     save_game_data(game_data)
     pygame.quit()
     sys.exit()
+
 

@@ -1,11 +1,11 @@
 import pygame
-from settings import PLAYER_SPEED, YELLOW, WIDTH, HEIGHT
-#
+from settings import PLAYER_SPEED, WIDTH, HEIGHT
+
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, color):
         super().__init__()
         self.image = pygame.Surface((20, 20))
-        self.image.fill(YELLOW)
+        self.image.fill(color)
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.speed = PLAYER_SPEED

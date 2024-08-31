@@ -1,6 +1,7 @@
-#sooooooooon#
+# maze.py
+
 import pygame
-from settings import BLUE
+from settings import BLUE_1, WIDTH, HEIGHT
 
 class Maze:
     def __init__(self):
@@ -18,30 +19,16 @@ class Maze:
             "1111111111111111111"
         ]
 
+        cell_width = WIDTH // len(layout[0])  
+        cell_height = HEIGHT // len(layout)  
+
         for row_idx, row in enumerate(layout):
             for col_idx, cell in enumerate(row):
                 if cell == "1":
-                    wall = pygame.Rect(col_idx * 30, row_idx * 30, 30, 30)
+                    wall = pygame.Rect(col_idx * cell_width, row_idx * cell_height, cell_width, cell_height)
                     self.walls.append(wall)
-
-        self.add_boundaries()
-
-    def add_boundaries(self):
-        if not self.walls:
-            return
-        
-        width = len(self.walls[0]) // 30
-        height = len(self.walls) // 30
-        border_thickness = 30
-
-        top_border = pygame.Rect(0, 0, width * 30, border_thickness)
-        bottom_border = pygame.Rect(0, height * 30, width * 30, border_thickness)
-        
-        left_border = pygame.Rect(0, 0, border_thickness, height * 30)
-        right_border = pygame.Rect(width * 30, 0, border_thickness, height * 30)
-        
-        self.walls.extend([top_border, bottom_border, left_border, right_border])
 
     def draw(self, screen):
         for wall in self.walls:
-            pygame.draw.rect(screen, BLUE, wall)
+            pygame.draw.rect(screen, BLUE_1, wall)
+
