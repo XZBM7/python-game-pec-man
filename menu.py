@@ -8,67 +8,70 @@ class MainMenu:
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Pac-Man Game - Main Menu")
-        self.font = pygame.font.Font(None, 30)  # Smaller font for title
-        self.button_font = pygame.font.Font(None, 22)  # Smaller font for buttons
+        self.font = pygame.font.Font(None, 30)
+        self.button_font = pygame.font.Font(None, 22)
         self.running = True
         self.showing_stats = False
         self.showing_settings = False
         self.showing_achievements = False
         self.showing_ai = False
-        self.showing_darkness = False
+        self.super_power_enabled = False
+        self.showing_exit = False  
+
         self.selected_colors = {
             'player': DEFAULT_PLAYER_COLOR,
             'enemy': DEFAULT_ENEMY_COLOR
         }
-        self.game_data = load_game_data()  # Load game data here
+        self.game_data = load_game_data()
         self.draw_main_menu()
 
     def draw_main_menu(self):
-        self.screen.fill(BLACK)
-        title_text = self.font.render("Pac-Man Game", True, WHITE)
-        title_rect = title_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 120))
-        self.screen.blit(title_text, title_rect)
+     self.screen.fill(BLACK)
+     title_text = self.font.render("Pac-Man Game", True, WHITE)
+     title_rect = title_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 120))
+     self.screen.blit(title_text, title_rect)
 
-        start_button_text = self.button_font.render("Start Game", True, GREEN)
-        start_button_rect = start_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
-        pygame.draw.rect(self.screen, WHITE, start_button_rect.inflate(6, 3))
-        self.screen.blit(start_button_text, start_button_rect)
+     start_button_text = self.button_font.render("Start Game", True, GREEN)
+     start_button_rect = start_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
+     pygame.draw.rect(self.screen, WHITE, start_button_rect.inflate(6, 3))
+     self.screen.blit(start_button_text, start_button_rect)
 
-        stats_button_text = self.button_font.render("Statistics", True, BLUE)
-        stats_button_rect = stats_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 10))
-        pygame.draw.rect(self.screen, WHITE, stats_button_rect.inflate(6, 3))
-        self.screen.blit(stats_button_text, stats_button_rect)
+     stats_button_text = self.button_font.render("Statistics", True, BLUE)
+     stats_button_rect = stats_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 10))
+     pygame.draw.rect(self.screen, WHITE, stats_button_rect.inflate(6, 3))
+     self.screen.blit(stats_button_text, stats_button_rect)
 
-        settings_button_text = self.button_font.render("Settings", True, RED)
-        settings_button_rect = settings_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))
-        pygame.draw.rect(self.screen, WHITE, settings_button_rect.inflate(6, 3))
-        self.screen.blit(settings_button_text, settings_button_rect)
+     settings_button_text = self.button_font.render("Settings", True, RED)
+     settings_button_rect = settings_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))
+     pygame.draw.rect(self.screen, WHITE, settings_button_rect.inflate(6, 3))
+     self.screen.blit(settings_button_text, settings_button_rect)
 
-        achievements_button_text = self.button_font.render("Achievements", True, Orange)  
-        achievements_button_rect = achievements_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 90))
-        pygame.draw.rect(self.screen, WHITE, achievements_button_rect.inflate(6, 3))
-        self.screen.blit(achievements_button_text, achievements_button_rect)
+     achievements_button_text = self.button_font.render("Achievements", True, Orange)
+     achievements_button_rect = achievements_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 90))
+     pygame.draw.rect(self.screen, WHITE, achievements_button_rect.inflate(6, 3))
+     self.screen.blit(achievements_button_text, achievements_button_rect)
 
-        ai_button_text = self.button_font.render("Enhanced AI", True, Cyan)  
-        ai_button_rect = ai_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 130))
-        pygame.draw.rect(self.screen, WHITE, ai_button_rect.inflate(6, 3))
-        self.screen.blit(ai_button_text, ai_button_rect)
+     ai_button_text = self.button_font.render("Enhanced AI", True, Cyan)
+     ai_button_rect = ai_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 130))
+     pygame.draw.rect(self.screen, WHITE, ai_button_rect.inflate(6, 3))
+     self.screen.blit(ai_button_text, ai_button_rect)
 
-        darkness_button_text = self.button_font.render("Darkness Effect", True, Hot_Pink)  
-        darkness_button_rect = darkness_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 170))
-        pygame.draw.rect(self.screen, WHITE, darkness_button_rect.inflate(6, 3))
-        self.screen.blit(darkness_button_text, darkness_button_rect)
+     exit_button_text = self.button_font.render("Exit", True, RED)
+     exit_button_rect = exit_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 170))
+     pygame.draw.rect(self.screen, WHITE, exit_button_rect.inflate(6, 3))
+     self.screen.blit(exit_button_text, exit_button_rect)
 
-        pygame.display.flip()
+     pygame.display.flip()
 
-        self.buttons = {
-            "start_game": start_button_rect,
-            "stats": stats_button_rect,
-            "settings": settings_button_rect,
-            "achievements": achievements_button_rect,
-            "ai": ai_button_rect,
-            "darkness": darkness_button_rect
-        }
+     self.buttons = {
+        "start_game": start_button_rect,
+        "stats": stats_button_rect,
+        "settings": settings_button_rect,
+        "achievements": achievements_button_rect,
+        "ai": ai_button_rect,
+        "exit": exit_button_rect
+    }
+ 
 
     def draw_stats(self):
         self.screen.fill(BLACK)
@@ -125,14 +128,24 @@ class MainMenu:
             if self.selected_colors['enemy'] == color:
                 pygame.draw.rect(self.screen, WHITE, pygame.Rect(WIDTH // 2 - 90 + i * 25, HEIGHT // 2 + 50, 20, 20), 2)
 
+        super_power_text = self.font.render(f"Super Power: {'ON' if self.super_power_enabled else 'OFF'}", True, WHITE)
+        super_power_rect = super_power_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 80))
+        self.screen.blit(super_power_text, super_power_rect)
+
+        toggle_button_rect = pygame.Rect(WIDTH // 2 - 50, HEIGHT // 2 + 100, 100, 30)
+        pygame.draw.rect(self.screen, GREEN if self.super_power_enabled else RED, toggle_button_rect)
+        toggle_button_text = self.font.render("Toggle Power", True, WHITE)
+        toggle_button_text_rect = toggle_button_text.get_rect(center=toggle_button_rect.center)
+        self.screen.blit(toggle_button_text, toggle_button_text_rect)
+
         back_button_text = self.font.render("Back", True, RED)
-        back_button_rect = back_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
+        back_button_rect = back_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 150))
         pygame.draw.rect(self.screen, WHITE, back_button_rect.inflate(8, 4))
         self.screen.blit(back_button_text, back_button_rect)
 
         pygame.display.flip()
 
-        return back_button_rect
+        return back_button_rect, toggle_button_rect
 
     def draw_achievements(self):
         self.screen.fill(BLACK)
@@ -140,7 +153,6 @@ class MainMenu:
         achievements_title_rect = achievements_title.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 120))
         self.screen.blit(achievements_title, achievements_title_rect)
 
-        # Placeholder for achievements display
         achievements_text = self.font.render("Achievements will be displayed here.", True, WHITE)
         achievements_rect = achievements_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         self.screen.blit(achievements_text, achievements_rect)
@@ -160,7 +172,6 @@ class MainMenu:
         ai_title_rect = ai_title.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 120))
         self.screen.blit(ai_title, ai_title_rect)
 
-        # Placeholder for AI settings
         ai_text = self.font.render("AI settings will be displayed here.", True, WHITE)
         ai_rect = ai_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         self.screen.blit(ai_text, ai_rect)
@@ -174,25 +185,27 @@ class MainMenu:
 
         return back_button_rect
 
-    def draw_darkness(self):
-        self.screen.fill(BLACK)
-        darkness_title = self.font.render("Darkness Effect", True, WHITE)
-        darkness_title_rect = darkness_title.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 120))
-        self.screen.blit(darkness_title, darkness_title_rect)
+    def draw_exit(self):
+     self.screen.fill(BLACK)
 
-        # Placeholder for Darkness settings
-        darkness_text = self.font.render("Darkness effect settings will be displayed here.", True, WHITE)
-        darkness_rect = darkness_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-        self.screen.blit(darkness_text, darkness_rect)
+     exit_title = self.font.render("Are you sure you want to exit?", True, WHITE)
+     exit_title_rect = exit_title.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 60))
+     self.screen.blit(exit_title, exit_title_rect)
 
-        back_button_text = self.font.render("Back", True, RED)
-        back_button_rect = back_button_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 130))
-        pygame.draw.rect(self.screen, WHITE, back_button_rect.inflate(8, 4))
-        self.screen.blit(back_button_text, back_button_rect)
+     confirm_button_text = self.font.render("Yes", True, GREEN)
+     confirm_button_rect = confirm_button_text.get_rect(center=(WIDTH // 2 - 60, HEIGHT // 2 + 20))
+     pygame.draw.rect(self.screen, WHITE, confirm_button_rect.inflate(6, 3))
+     self.screen.blit(confirm_button_text, confirm_button_rect)
 
-        pygame.display.flip()
+     cancel_button_text = self.font.render("No", True, RED)
+     cancel_button_rect = cancel_button_text.get_rect(center=(WIDTH // 2 + 60, HEIGHT // 2 + 10))
+     pygame.draw.rect(self.screen, WHITE, cancel_button_rect.inflate(6, 3))
+     self.screen.blit(cancel_button_text, cancel_button_rect)
 
-        return back_button_rect
+     pygame.display.flip()
+
+     return confirm_button_rect, cancel_button_rect
+
 
     def get_selected_colors(self):
         return self.selected_colors
@@ -200,7 +213,7 @@ class MainMenu:
     def run(self):
         while self.running:
             if self.showing_settings:
-                back_button = self.draw_settings()
+                back_button, toggle_button = self.draw_settings()
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -209,6 +222,9 @@ class MainMenu:
                         if back_button.collidepoint(event.pos):
                             self.showing_settings = False
                             self.draw_main_menu()
+                        if toggle_button.collidepoint(event.pos):
+                            self.super_power_enabled = not self.super_power_enabled
+                            self.draw_settings()
                         for i, color in enumerate(COLORS):
                             player_color_rect = pygame.Rect(WIDTH // 2 - 90 + i * 25, HEIGHT // 2 - 20, 20, 20)
                             enemy_color_rect = pygame.Rect(WIDTH // 2 - 90 + i * 25, HEIGHT // 2 + 50, 20, 20)
@@ -246,15 +262,18 @@ class MainMenu:
                         if back_button.collidepoint(event.pos):
                             self.showing_ai = False
                             self.draw_main_menu()
-            elif self.showing_darkness:
-                back_button = self.draw_darkness()
+            elif self.showing_exit:
+                confirm_button, cancel_button = self.draw_exit()
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         sys.exit()
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        if back_button.collidepoint(event.pos):
-                            self.showing_darkness = False
+                        if confirm_button.collidepoint(event.pos):
+                            pygame.quit()
+                            sys.exit()
+                        if cancel_button.collidepoint(event.pos):
+                            self.showing_exit = False
                             self.draw_main_menu()
             else:
                 start_button = self.buttons["start_game"]
@@ -262,7 +281,8 @@ class MainMenu:
                 settings_button = self.buttons["settings"]
                 achievements_button = self.buttons["achievements"]
                 ai_button = self.buttons["ai"]
-                darkness_button = self.buttons["darkness"]
+                exit_button = self.buttons["exit"]
+
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -283,6 +303,6 @@ class MainMenu:
                         if ai_button.collidepoint(event.pos):
                             self.showing_ai = True
                             self.draw_ai()
-                        if darkness_button.collidepoint(event.pos):
-                            self.showing_darkness = True
-                            self.draw_darkness()
+                        if exit_button.collidepoint(event.pos):
+                            self.showing_exit = True
+                            self.draw_exit()

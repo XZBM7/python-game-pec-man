@@ -6,9 +6,10 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.Surface((20, 20))
         self.image.fill(color)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect = self.image.get_rect(topleft=(x, y))
         self.speed = PLAYER_SPEED
+        self.lives = 3
+        self.invincible = False
 
     def update(self, keys):
         dx, dy = 0, 0
@@ -32,3 +33,11 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
         if self.rect.bottom > HEIGHT:
             self.rect.bottom = HEIGHT
+
+    def lose_life(self):
+        if not self.invincible:
+            self.lives -= 1
+            self.invincible = False
+
+    def freeze_enemies(self):
+        pass
