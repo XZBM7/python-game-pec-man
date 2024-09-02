@@ -1,4 +1,3 @@
-# maze.py
 
 import pygame
 from settings import BLUE_1, WIDTH, HEIGHT

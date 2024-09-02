@@ -3,16 +3,17 @@ import sys
 from menu import MainMenu
 from settings import FPS, WIDTH, HEIGHT, BLACK, WHITE, RED, GREEN
 from player import Player
-from enemy import Enemy, spawn_enemies
+from enemy import Enemy, spawn_enemies ,update_enemy_states
 from maze import Maze
 from coin import create_coins
 from database import load_game_data, save_game_data
 from utils import show_message, draw_round_info
 
-def run_game(selected_colors):
+
+def run_game(selected_colors, friend_mode=False):
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Pac-Man Game")
+    pygame.display.set_caption("Phantom Escape (DEV : XZ )")
     clock = pygame.time.Clock()
 
     font = pygame.font.Font(None, 36)
@@ -34,7 +35,8 @@ def run_game(selected_colors):
     game_over = False
     score = 0
 
-    enemy_speed = 2
+    base_enemy_speed = 2
+    ai_enemy_speed_multiplier = 1.5
 
     while current_round <= num_rounds:
         all_sprites = pygame.sprite.Group()
@@ -49,7 +51,12 @@ def run_game(selected_colors):
         coins = create_coins(num_coins)
         all_sprites.add(coins)
 
-        spawn_enemies(current_round, all_sprites, enemies, enemy_speed, color=enemy_color)
+        current_enemy_speed = base_enemy_speed + (current_round - 1) * 0.5
+
+        if not friend_mode:
+            current_enemy_speed *= ai_enemy_speed_multiplier
+
+        spawn_enemies(current_round, all_sprites, enemies, current_enemy_speed, color=enemy_color, is_friend_mode=friend_mode)
 
         round_start_time = pygame.time.get_ticks()
         round_end_time = round_start_time + 30000
@@ -73,13 +80,10 @@ def run_game(selected_colors):
                 print(f"Score: {score}")
 
             if coins_collected >= num_coins:
-                enemy_movement_allowed = False
-            else:
-                enemy_movement_allowed = True
+                update_enemy_states(enemies, coins_collected, num_coins)
 
-            if enemy_movement_allowed:
-                for enemy in enemies:
-                    enemy.update(player.rect.center, enemies)
+            for enemy in enemies:
+                enemy.update(player.rect.center, enemies, is_friend_mode=friend_mode)
 
             if pygame.sprite.spritecollideany(player, enemies):
                 game_over = True
@@ -114,12 +118,13 @@ def run_game(selected_colors):
 
         if coins_collected >= num_coins:
             wins += 1
+            for enemy in enemies:
+                enemy.is_frozen = True
 
         if current_round < num_rounds:
             show_message(screen, font, "Break... Wait", WHITE, RED)
             pygame.time.wait(5000)
 
-        enemy_speed += 1
         current_round += 1
 
     show_message(screen, win_font, "You Win!", GREEN, BLACK)
@@ -137,5 +142,3 @@ def run_game(selected_colors):
     save_game_data(game_data)
     pygame.quit()
     sys.exit()
-
-

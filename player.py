@@ -37,7 +37,13 @@ class Player(pygame.sprite.Sprite):
     def lose_life(self):
         if not self.invincible:
             self.lives -= 1
-            self.invincible = False
+            self.invincible = True 
+            pygame.time.set_timer(pygame.USEREVENT + 1, 3000)  
 
-    def freeze_enemies(self):
-        pass
+    def freeze_enemies(self, enemies):
+        for enemy in enemies:
+            enemy.is_frozen = True
+
+    def unfreeze_enemies(self, enemies):
+        for enemy in enemies:
+            enemy.is_frozen = False
